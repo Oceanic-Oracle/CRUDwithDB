@@ -2,33 +2,33 @@ let data = new Map();
 
 module.exports = {
     getUsers: () => {
-        return JSON.stringify(data);
+        return JSON.stringify(Array.from(data));
     },
     getUser: (login) => {
-        const password = data.get(login);
-        if (data.has(login) && password !== undefined) {
-            return JSON.stringify({login: password})
+        if (data.has(login)) {
+            let password = data.get(login);
+            return JSON.stringify({[login]: password})
         } else {
             return JSON.stringify({'error': 'undefined'});
         }
     },
     createUser: (login, password) => {
-        if (!data.has(login)) {
-            data[login] = password;
+        if (!data.has(login) && password !== '') {
+            data.set(login, password)
             return JSON.stringify('Success');
         } else {
             return JSON.stringify({'error': 'Login is busy'});
         }
     },
     updateUser: (login, password) => {
-        if (data.has(login)) {
-            data[login] = password;
+        if (data.has(login) && password !== '') {
+            data.set(login, password);
             return JSON.stringify('Success');
         } else {
             return JSON.stringify({'error': 'undefined'});
         }
     },
-    deleteUser: () => {
+    deleteUser: (login) => {
         if (data.has(login)) {
             data.delete(login);
             return JSON.stringify('Success');

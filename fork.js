@@ -1,4 +1,4 @@
-const updateUser = require('./data');
+const updateUser = require('./routes/updateUser');
 const createUser = require('./routes/createUser');
 const deleteUser = require('./routes/deleteUser');
 const getUser    = require('./routes/getUser'); 

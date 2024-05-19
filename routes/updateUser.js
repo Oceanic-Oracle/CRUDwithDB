@@ -1,10 +1,10 @@
 const data = require('../data');
 
 module.exports = (req, res) => {
-    const body = '';
+    let body = '';
 
     req.on('data', chunk => {
-        body += chunk;
+        body += chunk.toString();
     });
 
     req.on('end', () => {

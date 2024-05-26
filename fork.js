@@ -4,19 +4,19 @@ const deleteUser = require('./routes/deleteUser');
 const getUser    = require('./routes/getUser'); 
 const getUsers   = require('./routes/getUsers');
 
-let fork = (req, res) => {
+let fork = async (req, res) => {
     const url    = req.url;
     const method = req.method;
     if (url === '/user' && method === 'POST') {
-        createUser(req, res);
+        await createUser(req, res);
     } else if (url === '/user' && method === 'DELETE') {
-        deleteUser(req, res);
+        await deleteUser(req, res);
     } else if (url === '/user' && method === 'PUT') {
-        updateUser(req, res);
+        await updateUser(req, res);
     } else if (url === '/user' && method === 'GET') {
-        getUser(req, res);
+        await getUser(req, res);
     } else if (url === '/' && method === 'GET') {
-        getUsers(req, res);
+        await getUsers(req, res);
     } else {
         res.setHeader('Content-Type', 'text/plain');
         res.end('404');

@@ -7,15 +7,16 @@ module.exports = (req, res) => {
         body += chunk;
     });
 
-    req.on('end', () => {
+    req.on('end', async () => {
         const parsedBody = new URLSearchParams(body);
         let login    = '';
         let password = '';
-        for (let pair of parsedBody.entries()) {
+        for (let pair of parsedBody) {
             login    = pair[0];
             password = pair[1];
         }
-        console.log(login.toString(), password.toString());
-        res.end(data.createUser(login, password));
+        console.log(login, password);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(await data.createUser(login.toString(), password.toString()));
     });
 }

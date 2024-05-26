@@ -7,12 +7,14 @@ module.exports = (req, res) => {
         body += chunk;
     });
 
-    req.on('end', () => {
+    req.on('end', async () => {
         const parsedBody = new URLSearchParams(body);
         let login = '';
         for (let pair of parsedBody) {
             login = pair[0];
         }
-        res.end(data.deleteUser(login));
+        console.log(login);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(await data.deleteUser(login.toString()));
     });
 }

@@ -1,39 +1,35 @@
-let data = new Map();
+const { Client } = require('pg');
+
+const client = new Client({
+    user: 'postgres',
+    host: '127.0.0.1',
+    database: 'Mail',
+    password: '241265',
+    port: 5432,
+});
+client.connect()
+    .then(() => console.log('Connected to the database'))
+    .catch(err => console.error('Error connecting to the database', err));
 
 module.exports = {
-    getUsers: () => {
-        return JSON.stringify(Array.from(data));
+    getUsers: async () => {
+        const result = await client.query('SELECT * FROM users');
+        return JSON.stringify(result.rows);
     },
-    getUser: (login) => {
-        if (data.has(login)) {
-            let password = data.get(login);
-            return JSON.stringify({[login]: password})
-        } else {
-            return JSON.stringify({'error': 'undefined'});
-        }
+    getUser: async (login) => {
+        const result = await client.query('SELECT * FROM users WHERE login = $1', [login]);
+        return JSON.stringify(result.rows);
     },
-    createUser: (login, password) => {
-        if (!data.has(login) && password !== '') {
-            data.set(login, password)
-            return JSON.stringify('Success');
-        } else {
-            return JSON.stringify({'error': 'Login is busy'});
-        }
+    createUser: async (login, password) => {
+        const result = await client.query('INSERT INTO users (login, password) VALUES ($1, $2)', [login, password]);
+        return JSON.stringify(result.rows);
     },
-    updateUser: (login, password) => {
-        if (data.has(login) && password !== '') {
-            data.set(login, password);
-            return JSON.stringify('Success');
-        } else {
-            return JSON.stringify({'error': 'undefined'});
-        }
+    updateUser: async (login, password) => {
+        const result = await client.query('UPDATE users SET password = $1 WHERE login = $2', [password, login]);
+        return JSON.stringify(result.rows);
     },
-    deleteUser: (login) => {
-        if (data.has(login)) {
-            data.delete(login);
-            return JSON.stringify('Success');
-        } else {
-            return JSON.stringify({'error': 'login does not exist'});
-        }
+    deleteUser: async (login) => {
+        const result = await client.query('DELETE FROM users WHERE login = $1', [login]); 
+        return JSON.stringify(result.rows);
     },
 }

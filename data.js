@@ -13,23 +13,55 @@ client.connect()
 
 module.exports = {
     getUsers: async () => {
-        const result = await client.query('SELECT * FROM users');
-        return JSON.stringify(result.rows);
+        try {
+            const result = await client.query('SELECT * FROM users');
+            return JSON.stringify(result.rows);
+        } catch (err) {
+            return JSON.stringify(err);
+        }
     },
     getUser: async (login) => {
-        const result = await client.query('SELECT * FROM users WHERE login = $1', [login]);
-        return JSON.stringify(result.rows);
+        try {
+            const result = await client.query('SELECT * FROM users WHERE login = $1', [login]);
+            return JSON.stringify(result.rows);
+        } catch(err) {
+            return JSON.stringify(err);
+        }
     },
     createUser: async (login, password) => {
-        const result = await client.query('INSERT INTO users (login, password) VALUES ($1, $2)', [login, password]);
-        return JSON.stringify(result.rows);
+        try {
+            const result = await client.query('INSERT INTO users (login, password) VALUES ($1, $2)', [login, password]);
+            if (result.rowCount > 0) {
+                return JSON.stringify({ status: 'Success' });
+            } else {
+                return JSON.stringify({ status: 'Error', message: 'Failed to update password' });
+            }
+        } catch(err) {
+            return JSON.stringify(err);
+        }
     },
     updateUser: async (login, password) => {
-        const result = await client.query('UPDATE users SET password = $1 WHERE login = $2', [password, login]);
-        return JSON.stringify(result.rows);
+        try {
+            const result = await client.query('UPDATE users SET password = $1 WHERE login = $2', [password, login]);
+            if (result.rowCount > 0) {
+                return JSON.stringify({ status: 'Success' });
+            } else {
+                return JSON.stringify({ status: 'Error', message: 'Failed to update password' });
+            }
+        } catch(err) {
+            return JSON.stringify(err);
+        }
     },
     deleteUser: async (login) => {
-        const result = await client.query('DELETE FROM users WHERE login = $1', [login]); 
-        return JSON.stringify(result.rows);
+        try {
+            const result = await client.query('DELETE FROM users WHERE login = $1', [login]); 
+            if (result.rowCount > 0) {
+                return JSON.stringify({ status: 'Success' });
+            } else {
+                return JSON.stringify({ status: 'Error', message: 'Failed to update password' });
+            }
+        } catch(err) {
+            return JSON.stringify(err);
+        }
     },
 }
